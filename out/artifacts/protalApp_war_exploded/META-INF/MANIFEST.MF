@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: Ioanna
+Build-Jdk: 1.8.0_231
+Implementation-Title: myApp
+Implementation-Version: 0.0.1-SNAPSHOT
+Implementation-Vendor-Id: com.protal
+Main-Class: ${start-class}
+
