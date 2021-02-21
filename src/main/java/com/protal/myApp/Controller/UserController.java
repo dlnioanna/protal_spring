@@ -5,15 +5,10 @@ import com.protal.myApp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static com.protal.myApp.Utils.CompressUtils.compressBytes;
@@ -33,8 +28,17 @@ public class UserController {
 
     @GetMapping(path = "/username/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
+        System.out.println("username is " + username );
         User user = userService.findByUsername(username);
-        System.out.println("user is " + user.getName() + " " + user.getLastName());
+        System.out.println("user is " + user.getUsername());
+        return new ResponseEntity<>(user, HttpStatus.OK);
+    }
+
+    @GetMapping(path = "/email/{email}")
+    public ResponseEntity<User> getUserByEmail(@PathVariable("email") String email) {
+        System.out.println(" email is " + email);
+        User user = userService.findByEmail(email);
+        System.out.println("user is " + user.getUsername());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -44,21 +48,38 @@ public class UserController {
         return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
     }
 
+    @GetMapping(path = "/getUser/{username}/{email}")
+    public ResponseEntity<List<User>> getUserByUsernameOrEmail(@PathVariable(name = "username", required = false) String username,
+                                                               @PathVariable(name = "email", required = false) String email) {
+        System.out.println("username is " + username + " email is " + email);
+        List<User> userList = userService.findByUsernameOrEmail(username, email);
+        System.out.println("user is " + userList.size());
+        return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
+    }
+
     @PostMapping(value = "/updateUserData")
-    public ResponseEntity updateUserValues(@RequestParam(value = "imageFile", required = false) MultipartFile file, @RequestParam("name") String name,
-                                         @RequestParam("lastName") String lastName, @RequestParam("telephone") Long telephone,
-                                         @RequestParam("password") String password, @RequestParam("id") Integer id) throws IOException {
+    public ResponseEntity updateUserValues(@RequestParam(value = "imageFile", required = false) MultipartFile file,
+                                           @RequestParam("name") String name,
+                                           @RequestParam("lastName") String lastName,
+                                           @RequestParam("telephone") Long telephone,
+                                           @RequestParam("password") String password,
+                                           @RequestParam("id") Integer id) throws IOException {
         User user = userService.findById(id);
+        user.setName(name);
+        user.setLastName(lastName);
+        user.setTelephone(telephone);
+        user.setPassword(password);
+
         if (user != null) {
             byte[] image = null;
             if (file != null) {
                 image = compressBytes(file.getBytes());
-                System.out.println("image update");
-                userService.updateUserValues(image, name, lastName, telephone,password, id);
+                user.setImage(image);
             } else {
-                System.out.println("no image update");
-                userService.updateUserValues(user.getImage(), name, lastName, telephone,password, id);
+                image = compressBytes(user.getImage());
+                user.setImage(image);
             }
+            userService.saveUser(user);
             return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);

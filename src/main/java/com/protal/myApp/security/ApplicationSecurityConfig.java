@@ -77,7 +77,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/login").permitAll()
-                .antMatchers("/", "/index", "/login", "/register").permitAll()
+                .antMatchers("/", "/index", "/login", "/register","/api/v1/ticketCheck/**").permitAll()
                 //.antMatchers("/api/**").hasRole("ROLE_USER")
                 .anyRequest()
                 .authenticated()

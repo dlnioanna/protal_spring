@@ -1,11 +1,8 @@
 package com.protal.myApp.Controller;
 
-import com.protal.myApp.Entity.Movie;
-import com.protal.myApp.Entity.MovieShow;
-import com.protal.myApp.Entity.User;
-import com.protal.myApp.Service.MovieService;
-import com.protal.myApp.Service.MovieShowService;
-import com.protal.myApp.Service.UserService;
+import com.protal.myApp.Entity.*;
+import com.protal.myApp.Service.*;
+import com.protal.myApp.Utils.DateUtils;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,16 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
-import java.util.zip.DataFormatException;
-import java.util.zip.Deflater;
-import java.util.zip.Inflater;
 
 import static com.protal.myApp.Utils.CompressUtils.compressBytes;
+import static java.util.stream.Collectors.toList;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
@@ -32,6 +26,14 @@ public class MovieController {
     MovieService movieService;
     @Autowired
     MovieShowService movieShowService;
+    @Autowired
+    RoomService roomService;
+    @Autowired
+    TicketService ticketService;
+    @Autowired
+    GuestService guestService;
+    @Autowired
+    UserService userService;
 
     @RequestMapping(value = "/movies", method = RequestMethod.OPTIONS)
     public ResponseEntity handle() {
@@ -54,14 +56,14 @@ public class MovieController {
         System.out.println("movies searching ");
 
         List<Movie> movieList = movieService.findAll();
-        System.out.println("movies are "+movieList.size());
+        System.out.println("movies are " + movieList.size());
         return new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
     }
 
     @GetMapping(path = "/moviesByMovieShowId")
     public ResponseEntity<List<Movie>> getMoviesByMovieShowId() {
         List<Movie> movieList = movieService.findAllOrderByMovieShowId();
-        System.out.println("movie lis size is "+movieList.size());
+        System.out.println("movie lis size is " + movieList.size());
         return new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
     }
 
@@ -72,25 +74,98 @@ public class MovieController {
         return new ResponseEntity<Movie>(movie, HttpStatus.OK);
     }
 
-    //todo na to allakso
     @PostMapping(path = "/movies/save")
-    public ResponseEntity saveMovie(@RequestParam (value = "imageFile", required = false) MultipartFile file,@RequestParam ("title") String title,
-                                    @RequestParam ("movie_year") String movieYear, @RequestParam ("rating") Long rating,
-                                    @RequestParam ("description") String description, @RequestParam ("movieShowId") String movieShowId) throws IOException {
-        byte[] image =null;
-        if(file!=null) {
+    public ResponseEntity saveMovie(@RequestParam(value = "imageFile", required = false) MultipartFile file,
+                                    @RequestParam("title") String title,
+                                    @RequestParam("movie_year") Integer movieYear,
+                                    @RequestParam("rating") Double rating,
+                                    @RequestParam("description") String description,
+                                    @RequestParam("movieShowId") Integer movieShowId,
+                                    @RequestParam("editedMovieId") Integer editedMovieId,
+                                    @RequestParam("capacity") Integer editedCapacity,
+                                    @RequestParam("date") Long date,
+                                    @RequestParam("time") Long time
+    ) throws IOException {
+        System.out.println("image " + file + " title " + title + "movie_year " + movieYear + " rating " + rating +
+                "desc " + description + " movie show id" + movieShowId
+                + " editedMovieId " + editedMovieId + " capacity " + editedCapacity + " date " + date + " time " + time);
+        List<String> emailsToSendMessage = new ArrayList<>();
+        String dateTimeEditedMessage = "";
+        String capacityEditedMessage = "";
+        Movie editedMovie = movieService.findById(editedMovieId);
+        String editedMessage = "Η προβολή της ταινίας \'" + editedMovie.getTitle() + "\' άλλαξε. Δείτε παρακάτω τις λεπτομέριες και επικοινωνήστε με το τμήμα κράτησης για αλλαγή του εισιτηρίου σας. \n";
+        editedMovie.setTitle(title);
+        editedMovie.setMovieYear(movieYear);
+        editedMovie.setRating(rating);
+        editedMovie.setDescription(description);
+        byte[] image = null;
+        if (file != null) {
             image = compressBytes(file.getBytes());
+            editedMovie.setPoster(image);
+        } else {
+            image = compressBytes(editedMovie.getPoster());
+            editedMovie.setPoster(image);
         }
-        System.out.println("image "+file+" title "+title+"movie_year "+movieYear+" rating "+rating+"desc "+description+" movie show id"+ movieShowId);
-//        List<User> userList = userService.findByUsernameOrEmail(username, email);
-//        if (userList == null || userList.size() == 0) {
-//            User newUser = new User(name, lastName, telephone, email,
-//                    username, password, User.ROLE_USER);
-//            newUser.setImage(image);
-//            userService.saveUser(newUser);
-            return new ResponseEntity(HttpStatus.OK);
-//        } else {
-//            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        movieService.saveMovie(editedMovie);
+        String movieEditedMessage = "Τίτλος : " + editedMovie.getTitle() + "\n";
+        MovieShow editedMovieShow = movieShowService.findById(movieShowId);
+        if ((editedMovieShow.getShowDate() != DateUtils.getDateFromMillis(date)) ||
+                (editedMovieShow.getStartTime() != DateUtils.getDateFromMillis(time))) {
+            editedMovieShow.setShowDate(DateUtils.getDateFromMillis(date));
+            editedMovieShow.setStartTime(DateUtils.getDateFromMillis(time));
+          Long endTime = time+7200000L;
+          editedMovieShow.setEndTime(DateUtils.getDateFromMillis(endTime));
+          movieShowService.saveMovieShow(editedMovieShow);
+        }
+        //αν έχει αλλάξει η ώρα προβολής βρίσκω τα εισιτηρια που έχουν εκδοθεί για αυτή την προβολή
+        // και ενημερώνω τον χρηστη που 'εκανε την αγορά και τους προσκεκλημένους
+        List<Ticket> editedTickets = ticketService.findByMovieShow(editedMovieShow);
+        List<User> buyers = editedTickets.stream()
+                .map(Ticket::getBuyer)
+                .distinct()
+                .collect(toList());
+        for (User buyer : buyers) {
+            try {
+                String email = buyer.getEmail();
+                emailsToSendMessage.add(email);
+            } catch (NullPointerException ne) {
+                ne.printStackTrace();
+            }
+        }
+        List<Integer> guestsId = editedTickets.stream()
+                .map(Ticket::getGuestId)
+                .distinct()
+                .collect(toList());
+        guestsId.removeAll(Collections.singleton(null));
+        for (Integer integer : guestsId) {
+            try {
+                Guest g = guestService.findById(integer);
+                if (g != null) {
+                    String email = g.getEmail();
+                    emailsToSendMessage.add(email);
+                }
+            } catch (NullPointerException ne) {
+                ne.printStackTrace();
+            }
+        }
+        dateTimeEditedMessage = "Προβολή : " + DateUtils.formatDate(editedMovieShow.getShowDate()) + " - ώρα " +
+                DateUtils.getTime(editedMovieShow.getStartTime()) + "\n";
+
+        Room editedRoom = editedMovieShow.getRoomOfMovieShow();
+        Integer capacity = editedRoom.getCapacity();
+        editedRoom.setCapacity(editedCapacity);
+        roomService.saveRoom(editedRoom);
+        Integer availableTickets = editedCapacity -editedMovieShow.getShowTickets().size();
+        if (availableTickets<1) {
+            capacityEditedMessage = "Δεν υπάρχουν διαθέσιμα εισιτήρια για την προβολή. Επικοινωνήστε για πιθανή αλλαγή του εισιτηρίου σας.";
+        } else {
+            capacityEditedMessage="Υπάρχουν "+availableTickets+" διαθέσιμα εισιτήρια για την προβολή";
+        }
+
+        String message = editedMessage+ movieEditedMessage+ dateTimeEditedMessage+ capacityEditedMessage;
+        for(String email:emailsToSendMessage )
+        movieService.infromAboutMovieChange(email, message);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     //todo na to sviso
@@ -103,7 +178,7 @@ public class MovieController {
         return ResponseEntity.status(HttpStatus.OK);
     }
 
-//todo na to sviso
+    //todo na to sviso
     @GetMapping(path = {"/getImage"})
     public ResponseEntity<Movie> getImage() throws IOException {
         final Movie retrievedMovie = movieService.findById(3);

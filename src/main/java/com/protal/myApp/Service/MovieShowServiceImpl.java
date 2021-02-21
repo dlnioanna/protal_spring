@@ -21,6 +21,11 @@ public class MovieShowServiceImpl implements MovieShowService {
     }
 
     @Override
+    public void saveMovieShow(MovieShow movieShow) {
+        movieShowRepository.save(movieShow);
+    }
+
+    @Override
     public List<MovieShow> findByMovieOfMovieShow(Movie movie) {
         return movieShowRepository.findByMovieOfMovieShow(movie);
     }

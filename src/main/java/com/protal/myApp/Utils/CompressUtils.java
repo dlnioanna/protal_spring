@@ -34,8 +34,7 @@ public class CompressUtils {
         try {
             inflater.setInput(data);
         } catch (NullPointerException ne) {
-            System.out.println("No image for user");
-      //      ne.printStackTrace();
+            ne.printStackTrace();
         }
         try {
             outputStream = new ByteArrayOutputStream(data.length);
@@ -46,7 +45,7 @@ public class CompressUtils {
             }
             outputStream.close();
         } catch (IOException | DataFormatException | NullPointerException ioe) {
-     //   ioe.printStackTrace();
+          ioe.printStackTrace();
         }
         return outputStream.toByteArray();
     }

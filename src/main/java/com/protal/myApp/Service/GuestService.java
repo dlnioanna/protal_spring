@@ -10,5 +10,5 @@ public interface GuestService {
 
     void saveGuest(Guest g);
 
-//    void updateGuestTicket(Guest guest, Ticket ticketOfGuest);
+    Guest findById(Integer id);
 }

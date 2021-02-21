@@ -1,8 +1,6 @@
 package com.protal.myApp.Repository;
 
-import com.protal.myApp.Entity.Guest;
-import com.protal.myApp.Entity.Ticket;
-import com.protal.myApp.Entity.User;
+import com.protal.myApp.Entity.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -17,6 +15,8 @@ import java.util.List;
 @Repository
 public interface TicketRepository extends JpaRepository<Ticket,Integer> {
     List<Ticket> findByBuyer(User buyer);
+
+    List<Ticket> findByMovieShow(MovieShow movieShow);
 
 //    List<Ticket> findByGuestOfTicket(Guest guest);
 

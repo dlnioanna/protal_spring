@@ -51,12 +51,12 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmail(String email) {
         User user = userRepository.findByEmail(email);
-//        try {
-//            byte[] decompressedImage = decompressBytes(user.getImage());
-//            user.setImage(decompressedImage);
-//        } catch (NullPointerException ne) {
-//            ne.printStackTrace();
-//        }
+        try {
+            byte[] decompressedImage = decompressBytes(user.getImage());
+            user.setImage(decompressedImage);
+        } catch (NullPointerException ne) {
+            ne.printStackTrace();
+        }
         return user;
     }
 
@@ -114,9 +114,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(User user) {
-        if (user.getImage()!=null){
-            user.setImage(decompressBytes(user.getImage()));
-        }
+//        if (user.getImage()!=null){
+//            user.setImage(decompressBytes(user.getImage()));
+//        }
         userRepository.save(user);
     }
 
@@ -136,7 +136,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsernameUncompressed(String username) {
-        System.out.println("username is "+username);
         return  userRepository.findByUsername(username);
     }
 
@@ -167,8 +166,8 @@ public class UserServiceImpl implements UserService {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setTo(user.getEmail());
         msg.setSubject("Κράτηση εισιτηρίων");
-        msg.setText("Η κράτησή σας για την ταινία "+movieShow.getMovieOfMovieShow().getTitle()+
-                " την "+ DateUtils.formatDate(movieShow.getShowDate())+" και ώρα " +
+        msg.setText("Η κράτησή σας για την ταινία \'"+movieShow.getMovieOfMovieShow().getTitle()+
+                "\' την "+ DateUtils.formatDate(movieShow.getShowDate())+" και ώρα " +
                 DateUtils.getTime(movieShow.getStartTime())+" έχει ολοκληρωθεί. Ο αριθμός εισιτηρίου σας είναι "
                 +userTicket.getId() +" Παρακαλούμε να τον έχετε μαζί σας για τον έλεγχο στην είσοδο. "+guestsText);
         javaMailSender.send(msg);

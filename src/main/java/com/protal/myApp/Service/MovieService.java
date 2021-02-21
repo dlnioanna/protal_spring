@@ -1,8 +1,6 @@
 package com.protal.myApp.Service;
 
-import com.protal.myApp.Entity.Movie;
-import com.protal.myApp.Entity.MovieShow;
-import com.protal.myApp.Entity.Room;
+import com.protal.myApp.Entity.*;
 
 import java.sql.Date;;
 import java.util.List;
@@ -25,4 +23,6 @@ public interface MovieService {
     Movie findByMovieShowsOfMovieContains(MovieShow movieShow);
 
     List<Movie> findAllOrderByMovieShowId();
+
+    void infromAboutMovieChange(String email, String message);
 }

@@ -24,8 +24,8 @@ public class GuestServiceImpl implements GuestService {
             SimpleMailMessage msg = new SimpleMailMessage();
             msg.setTo(guest.getEmail());
             msg.setSubject("Είσαστε προσκεκλημένος!");
-            msg.setText("Ο/Η "+ userName +" σας έχει προσκαλέσει στην προβολή της ταινίας "+movieShow.getMovieOfMovieShow().getTitle()+
-                    " την "+DateUtils.formatDate(movieShow.getShowDate())+" και ώρα " +
+            msg.setText("Ο/Η "+ userName +" σας έχει προσκαλέσει στην προβολή της ταινίας \'"+movieShow.getMovieOfMovieShow().getTitle()+
+                    "\' την "+DateUtils.formatDate(movieShow.getShowDate())+" και ώρα " +
                     DateUtils.getTime(movieShow.getStartTime())+
                     ". Ο αριθμός εισιτηρίου σας είναι "+ticket.getId()+". Παρακαλούμε να τον έχετε μαζί σας για τον έλεγχο στην είσοδο. ");
             javaMailSender.send(msg);
@@ -36,11 +36,9 @@ public class GuestServiceImpl implements GuestService {
         guestRepository.save(g);
     }
 
+    @Override
+    public Guest findById(Integer id) {
+        return guestRepository.findById(id).orElse(null);
+    }
 
-
-
-//    @Override
-//    public void updateGuestTicket(Guest guest, Ticket ticketOfGuest) {
-//        guestRepository.updateGuestTicket(guest,ticketOfGuest);
-//    }
 }

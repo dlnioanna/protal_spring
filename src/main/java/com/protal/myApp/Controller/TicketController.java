@@ -36,6 +36,20 @@ public class TicketController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @PostMapping(path="ticketCheck/{ticketNumber}")
+    public ResponseEntity checkTicket(@PathVariable Integer ticketNumber){
+        System.out.println("ticket number is "+ticketNumber);
+       Ticket ticket = ticketService.findById(ticketNumber);
+       if(ticket==null){
+           return new ResponseEntity(HttpStatus.BAD_REQUEST);
+       }else{
+           ticket.setUsed(1);
+           ticketService.saveTicket(ticket);
+           return new ResponseEntity(HttpStatus.OK);
+       }
+
+    }
+
     @PostMapping(value = "/purchase_tickets")
     public ResponseEntity buyTickets(@RequestParam(name = "numberOfTickets") Integer numberOfTickets, @RequestParam(name = "userName") String userName,
                                      @RequestParam(name = "guestList", required = false) String guestList, @RequestParam(name = "isSocialUser") Integer isSocialUser,

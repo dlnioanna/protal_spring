@@ -10,6 +10,8 @@ import java.util.List;
 public interface MovieShowService {
     List<MovieShow> findAll();
 
+    void saveMovieShow(MovieShow movieShow);
+
     List<MovieShow>  findByMovieOfMovieShow(Movie movie);
 
     List<MovieShow>  findByMovieOfMovieShow_Id(Integer movieId);

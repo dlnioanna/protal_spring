@@ -14,10 +14,5 @@ import java.util.List;
 @Repository
 public interface GuestRepository extends JpaRepository<Guest,Integer> {
     List<Guest> findByEmail(String email);
-//
-//    @Transactional
-//    @Modifying
-//    @Query(value = "update Guest g set g.ticketOfGuest =:ticket where g.id =:guestId")
-//    void updateGuestTicket(@Param("guest") Guest guest, @Param("ticket") Ticket ticket);
 
 }

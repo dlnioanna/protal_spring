@@ -19,6 +19,17 @@ public class TicketServiceImpl implements TicketService {
         ticketRepository.save(t);
     }
 
+    @Override
+    public List<Ticket> findByMovieShow(MovieShow movieShow) {
+        return ticketRepository.findByMovieShow(movieShow);
+    }
+
+    @Override
+    public Ticket findById(Integer ticketId) {
+        return ticketRepository.findById(ticketId).orElse(null);
+    }
+
+
 //    @Override
 //    public void updateTicketGuest(Guest guest, Ticket ticket) {
 //        ticketRepository.updateTicketGuest(guest,ticket);

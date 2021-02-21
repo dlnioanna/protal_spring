@@ -1,10 +1,11 @@
 package com.protal.myApp.Service;
 
-import com.protal.myApp.Entity.Movie;
-import com.protal.myApp.Entity.MovieShow;
-import com.protal.myApp.Entity.Room;
+import com.protal.myApp.Entity.*;
 import com.protal.myApp.Repository.MovieRepository;
+import com.protal.myApp.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
@@ -22,6 +23,8 @@ import static com.protal.myApp.Utils.CompressUtils.decompressBytes;
 public class MovieServiceImpl implements MovieService {
     @Autowired
     MovieRepository movieRepository;
+    @Autowired
+    private JavaMailSender javaMailSender;
 
     @Override
     public Movie findByTitle(String title) {
@@ -48,7 +51,7 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> findAll() {
         List<Movie> movieList = movieRepository.findAll();
         List<Movie> decompressedMovieList = new ArrayList<>();
-        System.out.println("movieservice list "+movieList.size());
+        System.out.println("movieservice list " + movieList.size());
         for (Movie movie : movieList) {
             byte[] decompressedPoster = decompressBytes(movie.getPoster());
             movie.setPoster(decompressedPoster);
@@ -114,4 +117,13 @@ public class MovieServiceImpl implements MovieService {
         return decompressedMovieList;
     }
 
+    @Override
+    public void infromAboutMovieChange(String email, String message) {
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setSubject("Αλλαγή κράτησης.");
+        msg.setText(message);
+        msg.setTo(email);
+        javaMailSender.send(msg);
+        System.out.println("message sent");
+    }
 }

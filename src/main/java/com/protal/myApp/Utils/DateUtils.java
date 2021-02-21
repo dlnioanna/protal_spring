@@ -19,7 +19,7 @@ public class DateUtils {
     }
 
     public static Date getCurrentDate() {
-        SimpleDateFormat timeFormat = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss:SSS");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss:SSS");
         Date date = new Date(System.currentTimeMillis());
         return date;
     }
