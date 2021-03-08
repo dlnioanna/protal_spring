@@ -18,11 +18,6 @@ public class PurchaseserviceImpl implements PurchaseService {
     }
 
     @Override
-    public void updatePurchaseTicket(Purchase purchase, List<Ticket> tickets) {
-        purchaseRepository.updatePurchaseTicket(purchase,tickets);
-    }
-
-    @Override
     public void deletePurchase(Purchase p) {
         purchaseRepository.delete(p);
     }

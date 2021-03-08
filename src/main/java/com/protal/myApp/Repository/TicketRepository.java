@@ -18,10 +18,4 @@ public interface TicketRepository extends JpaRepository<Ticket,Integer> {
 
     List<Ticket> findByMovieShow(MovieShow movieShow);
 
-//    List<Ticket> findByGuestOfTicket(Guest guest);
-
-//    @Transactional
-//    @Modifying
-//    @Query(value = "update Ticket t set t.guestOfTicket =:guest where t =:ticket")
-//    void updateTicketGuest(@Param("guest") Guest guest,@Param("ticket") Ticket ticket);
 }

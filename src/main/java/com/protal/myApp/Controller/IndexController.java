@@ -23,9 +23,4 @@ public class IndexController {
         return "index";
     }
 
-//    @GetMapping("/")
-//    public ResponseEntity<User> index() {
-//        User user=userService.findById(1);
-//        return new ResponseEntity<User>(user, HttpStatus.OK);
-//    }
 }

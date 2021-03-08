@@ -10,7 +10,6 @@ import java.util.Objects;
 
 @Data
 @Entity
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "room", schema = "protal")
 public class Room implements Serializable {
     @Id

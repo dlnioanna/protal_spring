@@ -13,8 +13,8 @@ import java.util.List;
 
 @Data
 @Entity
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "movie_show", schema = "protal")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id", scope = MovieShow.class)
 public class MovieShow implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -30,19 +30,13 @@ public class MovieShow implements Serializable {
     @Column(name = "show_date")
     private Date showDate;
 
-//    @Column(name = "movie_id")
-//    private Integer movieId;
-//
-//    @Column(name = "room_id")
-//    private Integer roomId;
-
     @OneToMany(mappedBy = "movieShow")
     @JsonManagedReference
     private List<Ticket> showTickets;
 
     @ManyToOne
     @JoinColumn(name = "movie_id", referencedColumnName = "id")
-    @JsonBackReference
+    // @JsonBackReference
     private Movie movieOfMovieShow;
 
     @ManyToOne

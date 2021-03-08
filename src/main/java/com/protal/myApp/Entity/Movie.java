@@ -11,7 +11,9 @@ import java.util.List;
 @Entity
 @RequiredArgsConstructor
 @NoArgsConstructor
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+@JsonIdentityInfo(
+        generator = ObjectIdGenerators.PropertyGenerator.class,
+        property = "id", scope = Movie.class)
 @Table(name = "movie", schema = "protal")
 public class Movie implements Serializable {
     @Id
@@ -38,13 +40,6 @@ public class Movie implements Serializable {
     private String description;
 
     @OneToMany(mappedBy = "movieOfMovieShow", fetch = FetchType.LAZY)
-    @JsonManagedReference
     private List<MovieShow> movieShowsOfMovie;
 
-//    @JsonManagedReference
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(name = "movie_show",
-//            joinColumns = {@JoinColumn(name = "movie_id")},
-//            inverseJoinColumns = {@JoinColumn(name = "room_id")})
-//    private List<Room> movieRoomList;
 }

@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping(path = "/username/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
-        System.out.println("username is " + username );
+        System.out.println("username is " + username);
         User user = userService.findByUsername(username);
         System.out.println("user is " + user.getUsername());
         return new ResponseEntity<>(user, HttpStatus.OK);
@@ -48,9 +48,18 @@ public class UserController {
         return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
     }
 
-    @GetMapping(path = "/getUser/{username}/{email}")
-    public ResponseEntity<List<User>> getUserByUsernameOrEmail(@PathVariable(name = "username", required = false) String username,
-                                                               @PathVariable(name = "email", required = false) String email) {
+//    @GetMapping(path = "/getUser/{username}/{email}")
+//    public ResponseEntity<List<User>> getUserByUsernameOrEmail(@PathVariable(name = "username", required = false) String username,
+//                                                               @PathVariable(name = "email", required = false) String email) {
+//        System.out.println("username is " + username + " email is " + email);
+//        List<User> userList = userService.findByUsernameOrEmail(username, email);
+//        System.out.println("user is " + userList.size());
+//        return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
+//    }
+
+    @PostMapping(value = "/getUsers")
+    public ResponseEntity<List<User>> getUserByUsernameOrEmail(@RequestParam(name = "username", required = false) String username,
+                                                               @RequestParam(name = "email", required = false) String email) {
         System.out.println("username is " + username + " email is " + email);
         List<User> userList = userService.findByUsernameOrEmail(username, email);
         System.out.println("user is " + userList.size());
@@ -69,7 +78,6 @@ public class UserController {
         user.setLastName(lastName);
         user.setTelephone(telephone);
         user.setPassword(password);
-
         if (user != null) {
             byte[] image = null;
             if (file != null) {
@@ -77,7 +85,9 @@ public class UserController {
                 user.setImage(image);
             } else {
                 image = compressBytes(user.getImage());
-                user.setImage(image);
+                if (image != null) {
+                    user.setImage(image);
+                }
             }
             userService.saveUser(user);
             return new ResponseEntity(HttpStatus.OK);
@@ -86,5 +96,31 @@ public class UserController {
         }
     }
 
+    @PostMapping(value = "/editUser")
+    public ResponseEntity editUserValues(@RequestParam("name") String name,
+                                         @RequestParam("lastName") String lastName,
+                                         @RequestParam("telephone") Long telephone,
+                                         @RequestParam("password") String password,
+                                         @RequestParam("role") String role,
+                                         @RequestParam("username") String username,
+                                         @RequestParam("email") String email,
+                                         @RequestParam("id") Integer id) {
+        User user = userService.findById(id);
+        user.setName(name);
+        user.setLastName(lastName);
+        user.setTelephone(telephone);
+        user.setPassword(password);
+        user.setRole(role);
+        user.setUsername(username);
+        user.setEmail(email);
+        if (user != null) {
+            byte[] image = compressBytes(user.getImage());
+            user.setImage(image);
+            userService.saveUser(user);
+            return new ResponseEntity(HttpStatus.OK);
+        } else {
+            return new ResponseEntity(HttpStatus.BAD_REQUEST);
+        }
+    }
 
 }

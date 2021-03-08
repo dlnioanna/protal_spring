@@ -27,9 +27,5 @@ public interface UserService {
 
     User findByUsernameUncompressed(String username);
 
-    void updateUserValues(byte[] image, String name, String lastName, Long telephone, String password, Integer id);
-
-    void updateUserValuesNoImage(String name, String lastName, Long telephone, String password, Integer id);
-
     void sendEmailToUser(List<Guest> guest, Ticket userTicket,List<Ticket> guestsTicket,  User user, MovieShow movieShow);
 }

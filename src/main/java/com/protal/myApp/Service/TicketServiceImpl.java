@@ -29,10 +29,4 @@ public class TicketServiceImpl implements TicketService {
         return ticketRepository.findById(ticketId).orElse(null);
     }
 
-
-//    @Override
-//    public void updateTicketGuest(Guest guest, Ticket ticket) {
-//        ticketRepository.updateTicketGuest(guest,ticket);
-//    }
-
 }

@@ -14,8 +14,5 @@ import java.util.List;
 
 @Repository
 public interface PurchaseRepository extends JpaRepository<Purchase,Integer> {
-    @Transactional
-    @Modifying
-    @Query(value = "update Purchase p set p.ticketsPurchased =:tickets where p =:purchase")
-    void updatePurchaseTicket(@Param("purchase") Purchase purchase, @Param("tickets") List<Ticket> tickets);
+
 }

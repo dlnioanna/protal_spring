@@ -9,7 +9,5 @@ import java.util.List;
 public interface PurchaseService {
     void savePurchase(Purchase p);
 
-    void updatePurchaseTicket(Purchase purchase,List<Ticket> tickets);
-
     void deletePurchase(Purchase p);
 }

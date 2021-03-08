@@ -54,16 +54,13 @@ public class MovieController {
     @GetMapping(path = "/movies")
     public ResponseEntity<List<Movie>> getMovies() {
         System.out.println("movies searching ");
-
         List<Movie> movieList = movieService.findAll();
-        System.out.println("movies are " + movieList.size());
         return new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
     }
 
     @GetMapping(path = "/moviesByMovieShowId")
     public ResponseEntity<List<Movie>> getMoviesByMovieShowId() {
         List<Movie> movieList = movieService.findAllOrderByMovieShowId();
-        System.out.println("movie lis size is " + movieList.size());
         return new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
     }
 

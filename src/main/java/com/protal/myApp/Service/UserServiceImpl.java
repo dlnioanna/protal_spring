@@ -23,11 +23,14 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(Integer id) {
         User user = userRepository.findById(id).orElse(null);
-        try {
-            byte[] decompressedImage = decompressBytes(user.getImage());
-            user.setImage(decompressedImage);
-        } catch (NullPointerException ne) {
-            ne.printStackTrace();
+        assert user != null;
+        if(user.getImage()!=null){
+            try {
+                byte[] decompressedImage = decompressBytes(user.getImage());
+                user.setImage(decompressedImage);
+            } catch (NullPointerException ne) {
+                ne.printStackTrace();
+            }
         }
         return user;
     }
@@ -114,22 +117,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void saveUser(User user) {
-//        if (user.getImage()!=null){
-//            user.setImage(decompressBytes(user.getImage()));
-//        }
         userRepository.save(user);
     }
 
     @Override
     public User findByUsername(String username) {
-        System.out.println("username is "+username);
         User user = userRepository.findByUsername(username);
-        System.out.println("user is "+user.getLastName());
-        try {
-            byte[] decompressedImage = decompressBytes(user.getImage());
-            user.setImage(decompressedImage);
-        } catch (NullPointerException ne) {
-            ne.printStackTrace();
+        if(user.getImage()!=null){
+            try {
+                byte[] decompressedImage = decompressBytes(user.getImage());
+                user.setImage(decompressedImage);
+            } catch (NullPointerException ne) {
+                ne.printStackTrace();
+            }
         }
         return user;
     }
@@ -137,16 +137,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByUsernameUncompressed(String username) {
         return  userRepository.findByUsername(username);
-    }
-
-    @Override
-    public void updateUserValues(byte[] image, String name, String lastName, Long telephone, String password, Integer id) {
-        userRepository.updateUserValues(image, name, lastName, telephone, password, id);
-    }
-
-    @Override
-    public void updateUserValuesNoImage(String name, String lastName, Long telephone, String password, Integer id) {
-        userRepository.updateUserValuesNoImage(name, lastName, telephone, password, id);
     }
 
     @Override

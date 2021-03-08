@@ -1,4 +1,4 @@
-package com.protal.myApp;
+package com.protal.myApp.Utils;
 
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;

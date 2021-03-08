@@ -10,12 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
 import java.util.Set;
-
-import static com.protal.myApp.security.ApplicationUserRole.ADMIN;
-import static com.protal.myApp.security.ApplicationUserRole.USER;
 
 @Repository
 public class ApplicationUserDaoService implements ApplicationUserDao {
