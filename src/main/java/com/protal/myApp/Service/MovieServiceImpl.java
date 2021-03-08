@@ -51,7 +51,6 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> findAll() {
         List<Movie> movieList = movieRepository.findAll();
         List<Movie> decompressedMovieList = new ArrayList<>();
-        System.out.println("movieservice list " + movieList.size());
         for (Movie movie : movieList) {
             byte[] decompressedPoster = decompressBytes(movie.getPoster());
             movie.setPoster(decompressedPoster);
@@ -124,6 +123,5 @@ public class MovieServiceImpl implements MovieService {
         msg.setText(message);
         msg.setTo(email);
         javaMailSender.send(msg);
-        System.out.println("message sent");
     }
 }

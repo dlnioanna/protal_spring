@@ -53,7 +53,6 @@ public class MovieController {
 
     @GetMapping(path = "/movies")
     public ResponseEntity<List<Movie>> getMovies() {
-        System.out.println("movies searching ");
         List<Movie> movieList = movieService.findAll();
         return new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
     }
@@ -83,9 +82,6 @@ public class MovieController {
                                     @RequestParam("date") Long date,
                                     @RequestParam("time") Long time
     ) throws IOException {
-        System.out.println("image " + file + " title " + title + "movie_year " + movieYear + " rating " + rating +
-                "desc " + description + " movie show id" + movieShowId
-                + " editedMovieId " + editedMovieId + " capacity " + editedCapacity + " date " + date + " time " + time);
         List<String> emailsToSendMessage = new ArrayList<>();
         String dateTimeEditedMessage = "";
         String capacityEditedMessage = "";
@@ -164,27 +160,5 @@ public class MovieController {
         movieService.infromAboutMovieChange(email, message);
         return new ResponseEntity(HttpStatus.OK);
     }
-
-    //todo na to sviso
-    @PostMapping("/upload")
-    public ResponseEntity.BodyBuilder uploadImage(@RequestParam("imageFile") MultipartFile file) throws IOException {
-        Movie movie = new Movie("Léon ", 1994, 9.0);
-        movie.setPoster(compressBytes(file.getBytes()));
-        movie.setDescription("Mathilda, a 12-year-old girl, is reluctantly taken in by Léon, a professional assassin, after her family is murdered. An unusual relationship forms as she becomes his protégée and learns the assassin's trade.");
-        movieService.saveMovie(movie);
-        return ResponseEntity.status(HttpStatus.OK);
-    }
-
-    //todo na to sviso
-    @GetMapping(path = {"/getImage"})
-    public ResponseEntity<Movie> getImage() throws IOException {
-        final Movie retrievedMovie = movieService.findById(3);
-//        byte[] poster = decompressBytes(retrievedMovie.getPoster());
-//        Movie mv = new Movie(retrievedMovie.getTitle(), retrievedMovie.getMovieYear(),
-//                decompressBytes(retrievedMovie.getPoster()), retrievedMovie.getRating());
-//        System.out.println("poster is  " + retrievedMovie.getPoster().toString());
-        return new ResponseEntity<Movie>(retrievedMovie, HttpStatus.OK);
-    }
-
 
 }

@@ -28,17 +28,13 @@ public class UserController {
 
     @GetMapping(path = "/username/{username}")
     public ResponseEntity<User> getUserByUsername(@PathVariable("username") String username) {
-        System.out.println("username is " + username);
         User user = userService.findByUsername(username);
-        System.out.println("user is " + user.getUsername());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @GetMapping(path = "/email/{email}")
     public ResponseEntity<User> getUserByEmail(@PathVariable("email") String email) {
-        System.out.println(" email is " + email);
         User user = userService.findByEmail(email);
-        System.out.println("user is " + user.getUsername());
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
@@ -48,21 +44,10 @@ public class UserController {
         return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
     }
 
-//    @GetMapping(path = "/getUser/{username}/{email}")
-//    public ResponseEntity<List<User>> getUserByUsernameOrEmail(@PathVariable(name = "username", required = false) String username,
-//                                                               @PathVariable(name = "email", required = false) String email) {
-//        System.out.println("username is " + username + " email is " + email);
-//        List<User> userList = userService.findByUsernameOrEmail(username, email);
-//        System.out.println("user is " + userList.size());
-//        return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
-//    }
-
     @PostMapping(value = "/getUsers")
     public ResponseEntity<List<User>> getUserByUsernameOrEmail(@RequestParam(name = "username", required = false) String username,
                                                                @RequestParam(name = "email", required = false) String email) {
-        System.out.println("username is " + username + " email is " + email);
         List<User> userList = userService.findByUsernameOrEmail(username, email);
-        System.out.println("user is " + userList.size());
         return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
     }
 

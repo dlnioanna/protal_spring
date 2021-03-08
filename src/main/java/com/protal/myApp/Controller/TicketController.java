@@ -89,11 +89,9 @@ public class TicketController {
             } else {
                 user = userService.findByUsernameUncompressed(userName);
             }
-            System.out.println("user is " + user.getUsername());
             //αποθηκεύω την αγορά εισιτηρίων
             Purchase purchase = new Purchase(user);
             purchaseService.savePurchase(purchase);
-            System.out.println("purchase saved ");
             //το frontend δεν επιτρέπει λιγότερα από 1 εισιτήρια. Το πρώτο το κρατάω για τον user και τα υπόλοιπα τα μοιράζω
             // στους καλεσμένους. Αν περισσεύουν απλά αποθηκεύονται στον λογαριασμό του χρήστη για να μπορέι να δεί
             // προηγούμενες αγορές του
