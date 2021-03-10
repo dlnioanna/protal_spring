@@ -163,4 +163,9 @@ public class UserServiceImpl implements UserService {
         javaMailSender.send(msg);
     }
 
+    @Override
+    public List<User> findBuyersByMovieShow_Id(Integer movieShowId) {
+        return userRepository.findBuyersByMovieShow_Id(movieShowId);
+    }
+
 }

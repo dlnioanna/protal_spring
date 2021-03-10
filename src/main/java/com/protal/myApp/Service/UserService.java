@@ -28,4 +28,6 @@ public interface UserService {
     User findByUsernameUncompressed(String username);
 
     void sendEmailToUser(List<Guest> guest, Ticket userTicket,List<Ticket> guestsTicket,  User user, MovieShow movieShow);
+
+    List<User> findBuyersByMovieShow_Id(Integer movieShowId);
 }

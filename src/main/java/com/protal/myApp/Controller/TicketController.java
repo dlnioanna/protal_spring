@@ -42,10 +42,10 @@ public class TicketController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-//    @RequestMapping(value = "/checkTicket", method = RequestMethod.OPTIONS)
-//    public ResponseEntity handleCheckIn() {
-//        return new ResponseEntity(HttpStatus.OK);
-//    }
+    @RequestMapping(value = "/guests/**", method = RequestMethod.OPTIONS)
+    public ResponseEntity handleGuests() {
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
     @PostMapping(path = "/ticketCheck/{ticketNumber}")
     public ResponseEntity ticketCheck(@PathVariable Integer ticketNumber) {
@@ -134,5 +134,10 @@ public class TicketController {
         }
     }
 
+    @GetMapping(path = "/guests/{movieShowId}")
+    public ResponseEntity<List<Guest>> getGuestsOfMovieShow(@PathVariable("movieShowId") Integer movieShowId) {
+        List<Guest> guestsList = guestService.getAttendantsOfMovieShow(movieShowId);
+        return new ResponseEntity<List<Guest>>(guestsList, HttpStatus.OK);
+    }
 
 }

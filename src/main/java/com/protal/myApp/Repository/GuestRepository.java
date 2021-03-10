@@ -15,4 +15,5 @@ import java.util.List;
 public interface GuestRepository extends JpaRepository<Guest,Integer> {
     List<Guest> findByEmail(String email);
 
+    Guest findByTicketId(Integer id);
 }

@@ -25,8 +25,23 @@ public class TicketServiceImpl implements TicketService {
     }
 
     @Override
+    public List<Ticket> findByMovieShow_Id(Integer movieShowId) {
+        return ticketRepository.findByMovieShow_Id(movieShowId);
+    }
+
+    @Override
+    public List<Ticket> findByMovieShow_IdAndUsed(Integer movieShowId, Integer used) {
+        return ticketRepository.findByMovieShow_IdAndUsed(movieShowId,used);
+    }
+
+    @Override
     public Ticket findById(Integer ticketId) {
         return ticketRepository.findById(ticketId).orElse(null);
+    }
+
+    @Override
+    public List<Ticket> findByBuyer_IdAndMovieShow_IdAndUsed(Integer userId, Integer movieshowId,Integer used) {
+        return ticketRepository.findByBuyer_IdAndMovieShow_IdAndUsed(userId,movieshowId,used);
     }
 
 }

@@ -1,8 +1,6 @@
 package com.protal.myApp.Service;
 
-import com.protal.myApp.Entity.Guest;
-import com.protal.myApp.Entity.MovieShow;
-import com.protal.myApp.Entity.Ticket;
+import com.protal.myApp.Entity.*;
 import com.protal.myApp.Repository.GuestRepository;
 import com.protal.myApp.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +8,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -18,6 +17,10 @@ public class GuestServiceImpl implements GuestService {
     GuestRepository guestRepository;
     @Autowired
     private JavaMailSender javaMailSender;
+    @Autowired
+    private TicketService ticketService;
+    @Autowired
+    private UserService userService;
 
     @Override
     public void sendEmailToGuests(Guest guest, Ticket ticket, String userName, MovieShow movieShow){
@@ -40,5 +43,37 @@ public class GuestServiceImpl implements GuestService {
     public Guest findById(Integer id) {
         return guestRepository.findById(id).orElse(null);
     }
+
+    @Override
+    public Guest findByTicketId(Integer id) {
+        return guestRepository.findByTicketId(id);
+    }
+
+    @Override
+    public List<Guest> getAttendantsOfMovieShow(Integer movieShowId) {
+        List<Ticket> ticketList = ticketService.findByMovieShow_IdAndUsed(movieShowId,1);
+        List<Guest> guestList = new ArrayList<>();
+        for(Ticket ticket: ticketList){
+            Guest g = guestRepository.findByTicketId(ticket.getId());
+            if(g!=null && !g.getName().equals("")){
+                guestList.add(g);
+            }
+        }
+        List<User> buyers = userService.findBuyersByMovieShow_Id(movieShowId);
+        for (User user: buyers){
+            List<Ticket> tList = ticketService.findByBuyer_IdAndMovieShow_IdAndUsed(user.getId(),movieShowId,1);
+            for(Ticket t: tList){
+                if(t.getGuestId()==null){
+                    Guest temp = new Guest(user.getName(),user.getEmail());
+                    temp.setTicketId(t.getId());
+                    guestList.add(temp);
+                }
+            }
+        }
+        System.out.println("usersTicket list size is "+buyers.size());
+        System.out.println("guest list size is "+guestList.size());
+        return guestList;
+    }
+
 
 }

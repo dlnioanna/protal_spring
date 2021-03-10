@@ -30,5 +30,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     List<User> findByUsernameOrEmail(String username, String email);
 
+    @Query("select distinct t.buyer from Ticket t where t.movieShow.id=:movieShowId and t.used=1")
+    List<User> findBuyersByMovieShow_Id(@Param("movieShowId") Integer movieShowId);
 
 }

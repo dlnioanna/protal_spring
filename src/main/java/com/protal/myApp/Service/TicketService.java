@@ -13,5 +13,10 @@ public interface TicketService {
 
     List<Ticket> findByMovieShow(MovieShow movieShow);
 
+    List<Ticket> findByMovieShow_Id(Integer movieShowId);
+
+    List<Ticket> findByMovieShow_IdAndUsed(Integer movieShowId, Integer used);
+
     Ticket findById(Integer ticketId);
-}
+
+    List<Ticket> findByBuyer_IdAndMovieShow_IdAndUsed(Integer userId, Integer movieshowId,Integer used);}

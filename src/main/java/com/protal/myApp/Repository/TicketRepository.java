@@ -18,4 +18,12 @@ public interface TicketRepository extends JpaRepository<Ticket,Integer> {
 
     List<Ticket> findByMovieShow(MovieShow movieShow);
 
+    List<Ticket> findByMovieShow_Id(Integer movieShowId);
+
+    List<Ticket> findByMovieShow_IdAndUsed(Integer movieShowId, Integer used);
+
+    List<Ticket> findByBuyer_IdAndMovieShow_IdAndUsed(Integer userId, Integer movieshowId,Integer used);
+
+
+
 }
