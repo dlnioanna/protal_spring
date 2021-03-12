@@ -1,5 +1,6 @@
 package com.protal.myApp.Controller;
 
+import com.google.gson.Gson;
 import com.protal.myApp.Entity.*;
 import com.protal.myApp.Service.*;
 import com.protal.myApp.Utils.DateUtils;
@@ -11,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.json.*;
 
+import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,21 +49,35 @@ public class TicketController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping(path = "/ticketCheck/{ticketNumber}")
+    @PostMapping(path = "/ticketCheck/{ticketNumber}",produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity ticketCheck(@PathVariable Integer ticketNumber) {
         Ticket ticket = ticketService.findById(ticketNumber);
         if (ticket == null) {
-            System.out.println("ticket invalid");
             return new ResponseEntity("Ο αριθμός εισιτηρίου δεν είναι έγκυρος. Παρακαλώ απευθυνθείτε στον υπεύθυνο κρατήσεων.", HttpStatus.BAD_REQUEST);
         } else if (ticket.getUsed() == 1) {
-            System.out.println("ticket used");
             return new ResponseEntity("Το εισιτήριο έχει ήδη χρησιμοποιηθεί. ", HttpStatus.BAD_REQUEST);
         } else {
             ticket.setUsed(1);
             ticketService.saveTicket(ticket);
-            String response = "success message ";
-            System.out.println("ticket success");
-            return new ResponseEntity(response, HttpStatus.OK);
+            String name=null;
+            if(ticket.getGuestId()!=null){
+                Guest g = guestService.findById(ticket.getGuestId());
+                if(!g.getName().equals("")){
+                    name = g.getName();
+                }else {
+                    User user = ticket.getBuyer();
+                    name = user.getName();
+                }
+            }else {
+                User user = ticket.getBuyer();
+                name = user.getName();
+            }
+            MovieShow movieShow = movieShowService.findById(ticket.getMovieShow().getId());
+            Movie movie = movieService.findById(movieShow.getMovieOfMovieShow().getId());
+            Gson gson = new Gson();
+            String response = "Καλωσήλθες "+name+"!"+" Η ταινία  \'"+movie.getTitle()+"\' θα ξεκινήσει στις "+
+                    DateUtils.getTime(movieShow.getStartTime())+" στην αίθουσα "+movieShow.getRoomOfMovieShow().getName()+". Καλή διασκέδαση!";
+            return new ResponseEntity(gson.toJson(response,String.class), HttpStatus.OK);
         }
     }
 

@@ -70,10 +70,7 @@ public class GuestServiceImpl implements GuestService {
                 }
             }
         }
-        System.out.println("usersTicket list size is "+buyers.size());
-        System.out.println("guest list size is "+guestList.size());
         return guestList;
     }
-
 
 }
