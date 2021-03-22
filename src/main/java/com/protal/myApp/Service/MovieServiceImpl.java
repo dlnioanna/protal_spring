@@ -6,7 +6,9 @@ import com.protal.myApp.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,6 +19,7 @@ import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
 
+import static com.protal.myApp.Utils.CompressUtils.compressBytes;
 import static com.protal.myApp.Utils.CompressUtils.decompressBytes;
 
 @Service
@@ -117,11 +120,34 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
+    @Async
     public void infromAboutMovieChange(String email, String message) {
         SimpleMailMessage msg = new SimpleMailMessage();
         msg.setSubject("Αλλαγή κράτησης.");
         msg.setText(message);
         msg.setTo(email);
         javaMailSender.send(msg);
+    }
+
+    @Override
+    public void updateMovie(MultipartFile file, String title, Integer movieYear, Double rating, String description, Integer editedMovieId) {
+        Movie editedMovie = movieRepository.findById(editedMovieId).orElse(null);
+        editedMovie.setTitle(title);
+        editedMovie.setMovieYear(movieYear);
+        editedMovie.setRating(rating);
+        editedMovie.setDescription(description);
+        byte[] image = null;
+        try{
+            if (file != null) {
+                image = compressBytes(file.getBytes());
+                editedMovie.setPoster(image);
+            } else {
+                image = compressBytes(editedMovie.getPoster());
+                editedMovie.setPoster(image);
+            }
+        }catch (IOException e) {
+            e.printStackTrace();
+        }
+     saveMovie(editedMovie);
     }
 }

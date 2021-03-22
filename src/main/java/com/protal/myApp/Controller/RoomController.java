@@ -1,6 +1,5 @@
 package com.protal.myApp.Controller;
 
-import com.protal.myApp.Entity.Movie;
 import com.protal.myApp.Entity.Room;
 import com.protal.myApp.Service.RoomService;
 import org.springframework.beans.factory.annotation.Autowired;

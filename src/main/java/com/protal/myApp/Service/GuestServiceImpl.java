@@ -6,6 +6,7 @@ import com.protal.myApp.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -23,13 +24,14 @@ public class GuestServiceImpl implements GuestService {
     private UserService userService;
 
     @Override
+    @Async
     public void sendEmailToGuests(Guest guest, Ticket ticket, String userName, MovieShow movieShow){
             SimpleMailMessage msg = new SimpleMailMessage();
             msg.setTo(guest.getEmail());
             msg.setSubject("Είσαστε προσκεκλημένος!");
             msg.setText("Ο/Η "+ userName +" σας έχει προσκαλέσει στην προβολή της ταινίας \'"+movieShow.getMovieOfMovieShow().getTitle()+
                     "\' την "+DateUtils.formatDate(movieShow.getShowDate())+" και ώρα " +
-                    DateUtils.getTime(movieShow.getStartTime())+
+                    movieShow.getStartTime()+
                     ". Ο αριθμός εισιτηρίου σας είναι "+ticket.getId()+". Παρακαλούμε να τον έχετε μαζί σας για τον έλεγχο στην είσοδο. ");
             javaMailSender.send(msg);
     }

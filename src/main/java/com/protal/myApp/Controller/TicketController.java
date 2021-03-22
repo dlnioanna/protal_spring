@@ -4,15 +4,12 @@ import com.google.gson.Gson;
 import com.protal.myApp.Entity.*;
 import com.protal.myApp.Service.*;
 import com.protal.myApp.Utils.DateUtils;
-import com.protal.myApp.jwt.GoogleTokenVerification;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.json.*;
-
-import javax.jws.soap.SOAPBinding;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -76,7 +73,7 @@ public class TicketController {
             Movie movie = movieService.findById(movieShow.getMovieOfMovieShow().getId());
             Gson gson = new Gson();
             String response = "Καλωσήλθες "+name+"!"+" Η ταινία  \'"+movie.getTitle()+"\' θα ξεκινήσει στις "+
-                    DateUtils.getTime(movieShow.getStartTime())+" στην αίθουσα "+movieShow.getRoomOfMovieShow().getName()+". Καλή διασκέδαση!";
+                    DateUtils.getMovieShowDate(movieShow.getShowDate(),movieShow.getStartTime())+" στην αίθουσα "+movieShow.getRoomOfMovieShow().getName()+". Καλή διασκέδαση!";
             return new ResponseEntity(gson.toJson(response,String.class), HttpStatus.OK);
         }
     }

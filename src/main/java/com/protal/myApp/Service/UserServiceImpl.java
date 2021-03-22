@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -140,6 +141,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Async
     public void sendEmailToUser(List<Guest> guest,Ticket userTicket, List<Ticket> guestsTicket, User user, MovieShow movieShow){
        int numOfReservedTickets = guestsTicket.size();
        String idOfGuestsTickets = null;
@@ -158,7 +160,7 @@ public class UserServiceImpl implements UserService {
         msg.setSubject("Κράτηση εισιτηρίων");
         msg.setText("Η κράτησή σας για την ταινία \'"+movieShow.getMovieOfMovieShow().getTitle()+
                 "\' την "+ DateUtils.formatDate(movieShow.getShowDate())+" και ώρα " +
-                DateUtils.getTime(movieShow.getStartTime())+" έχει ολοκληρωθεί. Ο αριθμός εισιτηρίου σας είναι "
+                DateUtils.getTimeString(movieShow.getStartTime())+" έχει ολοκληρωθεί. Ο αριθμός εισιτηρίου σας είναι "
                 +userTicket.getId() +" Παρακαλούμε να τον έχετε μαζί σας για τον έλεγχο στην είσοδο. "+guestsText);
         javaMailSender.send(msg);
     }

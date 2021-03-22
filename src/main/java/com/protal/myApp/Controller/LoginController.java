@@ -1,6 +1,5 @@
 package com.protal.myApp.Controller;
 
-import com.protal.myApp.Entity.Movie;
 import com.protal.myApp.Entity.User;
 import com.protal.myApp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

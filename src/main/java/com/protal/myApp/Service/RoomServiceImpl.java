@@ -21,4 +21,10 @@ public class RoomServiceImpl implements RoomService {
     public void saveRoom(Room room) {
         roomRepository.save(room);
     }
+
+    @Override
+    public void updateRoomCapacity(Room room, Integer capacity) {
+        room.setCapacity(capacity);
+        roomRepository.save(room);
+    }
 }

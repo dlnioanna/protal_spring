@@ -2,7 +2,6 @@ package com.protal.myApp.Repository;
 
 import com.protal.myApp.Entity.Movie;
 import com.protal.myApp.Entity.MovieShow;
-import com.protal.myApp.Entity.Room;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

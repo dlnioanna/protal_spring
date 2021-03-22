@@ -1,6 +1,7 @@
 package com.protal.myApp.Service;
 
 import com.protal.myApp.Entity.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.sql.Date;;
 import java.util.List;
@@ -25,4 +26,6 @@ public interface MovieService {
     List<Movie> findAllOrderByMovieShowId();
 
     void infromAboutMovieChange(String email, String message);
+
+    void updateMovie(MultipartFile file, String title, Integer movieYear, Double rating, String description, Integer editedMovieId);
 }

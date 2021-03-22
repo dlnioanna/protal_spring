@@ -12,9 +12,9 @@ public interface MovieShowService {
 
     void saveMovieShow(MovieShow movieShow);
 
-    List<MovieShow>  findByMovieOfMovieShow(Movie movie);
+    List<MovieShow> findByMovieOfMovieShow(Movie movie);
 
-    List<MovieShow>  findByMovieOfMovieShow_Id(Integer movieId);
+    List<MovieShow> findByMovieOfMovieShow_Id(Integer movieId);
 
     List<MovieShow> findByRoomOfMovieShow(Room room);
 
@@ -22,6 +22,7 @@ public interface MovieShowService {
 
     List<MovieShow> findByShowDate(Date showDate);
 
-   MovieShow findById(Integer movieShowId);
+    MovieShow findById(Integer movieShowId);
 
+    void updateMovieShow(MovieShow movieShow, String showDate, String showTime);
 }

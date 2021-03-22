@@ -47,6 +47,7 @@ public class ApplicationSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+//  comment out για να βλέπω το api ston browser
 //                .csrf().disable()
 //                .authorizeRequests()
 //                .anyRequest()

@@ -3,19 +3,17 @@ package com.protal.myApp.Controller;
 import com.protal.myApp.Entity.*;
 import com.protal.myApp.Service.*;
 import com.protal.myApp.Utils.DateUtils;
-import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static com.protal.myApp.Utils.CompressUtils.compressBytes;
 import static java.util.stream.Collectors.toList;
 
 @RestController
@@ -79,37 +77,18 @@ public class MovieController {
                                     @RequestParam("movieShowId") Integer movieShowId,
                                     @RequestParam("editedMovieId") Integer editedMovieId,
                                     @RequestParam("capacity") Integer editedCapacity,
-                                    @RequestParam("date") Long date,
-                                    @RequestParam("time") Long time
-    ) throws IOException {
+                                    @RequestParam("date") String dateString,
+                                    @RequestParam("time") String timeString
+    ) {
         List<String> emailsToSendMessage = new ArrayList<>();
         String dateTimeEditedMessage = "";
         String capacityEditedMessage = "";
         Movie editedMovie = movieService.findById(editedMovieId);
         String editedMessage = "Η προβολή της ταινίας \'" + editedMovie.getTitle() + "\' άλλαξε. Δείτε παρακάτω τις λεπτομέριες και επικοινωνήστε με το τμήμα κράτησης για αλλαγή του εισιτηρίου σας. \n";
-        editedMovie.setTitle(title);
-        editedMovie.setMovieYear(movieYear);
-        editedMovie.setRating(rating);
-        editedMovie.setDescription(description);
-        byte[] image = null;
-        if (file != null) {
-            image = compressBytes(file.getBytes());
-            editedMovie.setPoster(image);
-        } else {
-            image = compressBytes(editedMovie.getPoster());
-            editedMovie.setPoster(image);
-        }
-        movieService.saveMovie(editedMovie);
+        movieService.updateMovie(file, title, movieYear, rating, description, editedMovieId);
         String movieEditedMessage = "Τίτλος : " + editedMovie.getTitle() + "\n";
         MovieShow editedMovieShow = movieShowService.findById(movieShowId);
-        if ((editedMovieShow.getShowDate() != DateUtils.getDateFromMillis(date)) ||
-                (editedMovieShow.getStartTime() != DateUtils.getDateFromMillis(time))) {
-            editedMovieShow.setShowDate(DateUtils.getDateFromMillis(date));
-            editedMovieShow.setStartTime(DateUtils.getDateFromMillis(time));
-          Long endTime = time+7200000L;
-          editedMovieShow.setEndTime(DateUtils.getDateFromMillis(endTime));
-          movieShowService.saveMovieShow(editedMovieShow);
-        }
+        movieShowService.updateMovieShow(editedMovieShow, dateString, timeString);
         //αν έχει αλλάξει η ώρα προβολής βρίσκω τα εισιτηρια που έχουν εκδοθεί για αυτή την προβολή
         // και ενημερώνω τον χρηστη που 'εκανε την αγορά και τους προσκεκλημένους
         List<Ticket> editedTickets = ticketService.findByMovieShow(editedMovieShow);
@@ -142,22 +121,17 @@ public class MovieController {
             }
         }
         dateTimeEditedMessage = "Προβολή : " + DateUtils.formatDate(editedMovieShow.getShowDate()) + " - ώρα " +
-                DateUtils.getTime(editedMovieShow.getStartTime()) + "\n";
-
-        Room editedRoom = editedMovieShow.getRoomOfMovieShow();
-        Integer capacity = editedRoom.getCapacity();
-        editedRoom.setCapacity(editedCapacity);
-        roomService.saveRoom(editedRoom);
-        Integer availableTickets = editedCapacity -editedMovieShow.getShowTickets().size();
-        if (availableTickets<1) {
+                DateUtils.getTimeString(editedMovieShow.getStartTime()) + "\n";
+        roomService.updateRoomCapacity(editedMovieShow.getRoomOfMovieShow(), editedCapacity);
+        Integer availableTickets = editedCapacity - editedMovieShow.getShowTickets().size();
+        if (availableTickets < 1) {
             capacityEditedMessage = "Δεν υπάρχουν διαθέσιμα εισιτήρια για την προβολή. Επικοινωνήστε για πιθανή αλλαγή του εισιτηρίου σας.";
         } else {
-            capacityEditedMessage="Υπάρχουν "+availableTickets+" διαθέσιμα εισιτήρια για την προβολή";
+            capacityEditedMessage = "Υπάρχουν " + availableTickets + " διαθέσιμα εισιτήρια για την προβολή";
         }
-
-        String message = editedMessage+ movieEditedMessage+ dateTimeEditedMessage+ capacityEditedMessage;
-        for(String email:emailsToSendMessage )
-        movieService.infromAboutMovieChange(email, message);
+        String message = editedMessage + movieEditedMessage + dateTimeEditedMessage + capacityEditedMessage;
+        for (String email : emailsToSendMessage)
+            movieService.infromAboutMovieChange(email, message);
         return new ResponseEntity(HttpStatus.OK);
     }
 

@@ -3,28 +3,14 @@ package com.protal.myApp.jwt;
 import com.google.common.base.Strings;
 import com.protal.myApp.Entity.User;
 import com.protal.myApp.Repository.UserRepository;
-import com.protal.myApp.Service.UserService;
-import com.protal.myApp.Utils.DateUtils;
-import com.protal.myApp.Utils.JsonUtils;
 import io.jsonwebtoken.*;
 import lombok.var;
-import org.json.JSONArray;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.jwt.JwtHelper;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-
 import javax.crypto.SecretKey;
-import javax.jws.soap.SOAPBinding;
-import javax.management.remote.rmi._RMIConnection_Stub;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,13 +19,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
-
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
-import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
-import com.google.api.client.http.javanet.NetHttpTransport;
-import com.google.api.client.json.jackson2.JacksonFactory;
-
 
 public class JwtTokenVerifier extends OncePerRequestFilter {
     private final SecretKey secretKey;

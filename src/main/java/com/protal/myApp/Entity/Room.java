@@ -2,11 +2,10 @@ package com.protal.myApp.Entity;
 
 import com.fasterxml.jackson.annotation.*;
 import lombok.Data;
-
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Objects;
+
 
 @Data
 @Entity
@@ -25,10 +24,6 @@ public class Room implements Serializable {
 
     @Column(name = "capacity")
     private Integer capacity;
-
-//    @ManyToMany(mappedBy = "movieRoomList", fetch = FetchType.LAZY)
-//    @JsonBackReference
-//    private List<Movie> roomMovieList;
 
     @OneToMany(mappedBy = "roomOfMovieShow", fetch = FetchType.LAZY)
     @JsonBackReference

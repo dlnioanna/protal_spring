@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Date;;
 import java.sql.Time;
-import java.sql.Timestamp;
 import java.util.List;
 
 
@@ -22,10 +21,10 @@ public class MovieShow implements Serializable {
     private Integer id;
 
     @Column(name = "start_time")
-    private Date startTime;
+    private Time startTime;
 
     @Column(name = "end_time")
-    private Date endTime;
+    private Time endTime;
 
     @Column(name = "show_date")
     private Date showDate;
@@ -43,4 +42,13 @@ public class MovieShow implements Serializable {
     @JoinColumn(name = "room_id", referencedColumnName = "id")
     @JsonManagedReference
     private Room roomOfMovieShow;
+
+    public Long getStartTime() {
+        return startTime.getTime();
+    }
+
+    public Long getEndTime() {
+        return endTime.getTime();
+    }
+
 }

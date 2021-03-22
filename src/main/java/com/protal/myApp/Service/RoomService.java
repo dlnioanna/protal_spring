@@ -8,4 +8,6 @@ public interface RoomService {
     List<Room> findAll();
 
     void saveRoom(Room room);
+
+    void updateRoomCapacity(Room room, Integer capacity);
 }
