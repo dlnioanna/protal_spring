@@ -9,9 +9,9 @@ import static com.protal.myApp.security.ApplicationUserPermission.*;
 
 
 public enum ApplicationUserRole {
-    USER(Sets.newHashSet()),
-    ADMIN(Sets.newHashSet(USER_READ, USER_WRITE, ADMIN_READ, ADMIN_WRITE)),
-    ADMIN_CS(Sets.newHashSet(USER_READ, USER_WRITE, ADMIN_READ, ADMIN_WRITE));
+    USER(Sets.newHashSet(MOVIE_READ,MOVIESHOW_READ)),
+    ADMIN(Sets.newHashSet(MOVIE_READ, MOVIE_WRITE,USER_READ, MOVIESHOW_READ, MOVIESHOW_WRITE)),
+    ADMIN_CS(Sets.newHashSet(MOVIE_READ, MOVIE_WRITE,USER_READ, USER_WRITE, MOVIESHOW_READ, MOVIESHOW_WRITE));
 
     private final Set<ApplicationUserPermission> permissions;
 

@@ -21,6 +21,8 @@ public interface UserService {
 
     List<User> findByUsernameOrEmail(String username, String email);
 
+    boolean checkIfUserExists(String username, String email);
+
     void saveUser(User user);
 
     User findByUsername(String username);
@@ -30,4 +32,6 @@ public interface UserService {
     void sendEmailToUser(List<Guest> guest, Ticket userTicket,List<Ticket> guestsTicket,  User user, MovieShow movieShow);
 
     List<User> findBuyersByMovieShow_Id(Integer movieShowId);
+
+
 }

@@ -117,6 +117,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public boolean checkIfUserExists(String username, String email) {
+        boolean userExists=false;
+        List<User> userList = userRepository.findByUsernameOrEmail(username, email);
+        if (userList == null || userList.size() == 0) {
+           userExists=false;
+        }else{
+            userExists=true;
+        }
+        return userExists;
+    }
+
+    @Override
     public void saveUser(User user) {
         userRepository.save(user);
     }

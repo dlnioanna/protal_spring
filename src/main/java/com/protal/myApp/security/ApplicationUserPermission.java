@@ -1,10 +1,12 @@
 package com.protal.myApp.security;
 
 public enum ApplicationUserPermission {
+    MOVIE_READ("movie:read"),
+    MOVIE_WRITE("movie:write"),
     USER_READ("user:read"),
-   USER_WRITE("user:write"),
-    ADMIN_READ("user:read"),
-    ADMIN_WRITE("user:write");
+    USER_WRITE("user:write"),
+    MOVIESHOW_READ("movieshow:read"),
+    MOVIESHOW_WRITE("movieshow:write");
 
     private final String permission;
 

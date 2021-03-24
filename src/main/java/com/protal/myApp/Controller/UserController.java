@@ -5,6 +5,7 @@ import com.protal.myApp.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
@@ -43,6 +44,7 @@ public class UserController {
         return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
     }
 
+    //@PreAuthorize("hasRole('ADMIN_CS')")
     @PostMapping(value = "/getUsers")
     public ResponseEntity<List<User>> getUserByUsernameOrEmail(@RequestParam(name = "username", required = false) String username,
                                                                @RequestParam(name = "email", required = false) String email) {

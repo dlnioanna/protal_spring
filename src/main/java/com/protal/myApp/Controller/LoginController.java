@@ -40,22 +40,28 @@ public class LoginController {
     }
 
     @PostMapping(value = "/register")
-    public ResponseEntity register(@RequestParam (value = "imageFile", required = false) MultipartFile file, @RequestParam ("name") String name,
-                                   @RequestParam ("lastName") String lastName, @RequestParam ("telephone") Long telephone,
-                                   @RequestParam ("email") String email, @RequestParam ("username") String username,
-                                   @RequestParam ("password") String password) throws IOException
-    {
-        byte[] image =null;
-        if(file!=null) {
-             image = compressBytes(file.getBytes());
+    public ResponseEntity register(@RequestParam(value = "imageFile", required = false) MultipartFile file, @RequestParam("name") String name,
+                                   @RequestParam("lastName") String lastName, @RequestParam("telephone") Long telephone,
+                                   @RequestParam("email") String email, @RequestParam("username") String username,
+                                   @RequestParam("password") String password) throws IOException {
+        byte[] image = null;
+        try {
+            if (file != null) {
+                image = compressBytes(file.getBytes());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        List<User> userList = userService.findByUsernameOrEmail(username, email);
-        if (userList == null || userList.size() == 0) {
+        boolean userExists = userService.checkIfUserExists(username, email);
+        System.out.println("user exists "+userExists);
+        // List<User> userList = userService.findByUsernameOrEmail(username, email);
+        if (!userExists) {
             User newUser = new User(name, lastName, telephone, email,
-                     username, password, User.ROLE_USER);
-         newUser.setImage(image);
+                    username, password, User.ROLE_USER);
+            System.out.println("user image "+image);
+            newUser.setImage(image);
             userService.saveUser(newUser);
-        return new ResponseEntity(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
