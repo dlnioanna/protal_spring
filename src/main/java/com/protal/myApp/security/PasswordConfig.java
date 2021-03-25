@@ -12,11 +12,6 @@ import java.util.Map;
 
 @Configuration
 public class PasswordConfig {
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return new BCryptPasswordEncoder(10);
-//    }
-
 
     //χωρίς κωδικοποίηση για να φαίνεται στη βάση τι αποθηκεύεται
     @Bean(name = "passwordEncoder")

@@ -56,6 +56,7 @@ public class MovieController {
         return new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN_CS') or hasRole('ADMIN')")
     @GetMapping(path = "/moviesByMovieShowId")
     public ResponseEntity<List<Movie>> getMoviesByMovieShowId() {
         List<Movie> movieList = movieService.findAllOrderByMovieShowId();
@@ -69,7 +70,7 @@ public class MovieController {
         return new ResponseEntity<Movie>(movie, HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasRole('ADMIN_CS') or hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN_CS') or hasRole('ADMIN')")
     @PostMapping(path = "/movies/save")
     public ResponseEntity saveMovie(@RequestParam(value = "imageFile", required = false) MultipartFile file,
                                     @RequestParam("title") String title,

@@ -9,6 +9,7 @@ import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken.Payload;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import com.protal.myApp.security.ApplicationUserRole;
 
 public class GoogleTokenVerification {
     private static final String GOOGLE_ID = "495787401556-ri9600efu58daort2k5rn5ass0nc4fe8.apps.googleusercontent.com";
@@ -32,7 +33,7 @@ public class GoogleTokenVerification {
                 // επειδή στο entity τα εχω ορίσει ΝoΝull δίνω στάνταρ τιμές
                 Long tempTelephone = 0000000000L;
                 String tempPassword = "noPassword";
-                String tempRole = "USER";
+                String tempRole = ApplicationUserRole.USER.name();
                 socialUser = new User(givenName,familyName,tempTelephone,email,name,tempPassword,tempRole);
                 TOKEN_VERIFIED = true;
             } else {

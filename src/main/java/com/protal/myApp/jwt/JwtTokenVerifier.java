@@ -3,6 +3,7 @@ package com.protal.myApp.jwt;
 import com.google.common.base.Strings;
 import com.protal.myApp.Entity.User;
 import com.protal.myApp.Repository.UserRepository;
+import com.protal.myApp.security.ApplicationUserRole;
 import io.jsonwebtoken.*;
 import lombok.var;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -53,7 +54,7 @@ public class JwtTokenVerifier extends OncePerRequestFilter {
                     /*αν ο χρήστης δε εχει κάνει εγγραφή και δεν υπάρχει στη βαση
                    βαζω στο τοκεν το όνομα που έχει στη google και τον κάνω απλό χρήστη     */
             if (user == null) {
-                SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority("USER");
+                SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(ApplicationUserRole.USER.name());
                 List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
                 simpleGrantedAuthorities.add(simpleGrantedAuthority);
                 authentication = new UsernamePasswordAuthenticationToken(

@@ -4,10 +4,12 @@ import com.google.gson.Gson;
 import com.protal.myApp.Entity.*;
 import com.protal.myApp.Service.*;
 import com.protal.myApp.Utils.DateUtils;
+import com.protal.myApp.security.ApplicationUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.json.*;
 import java.util.ArrayList;
@@ -96,7 +98,7 @@ public class TicketController {
                 if (existingUser != null) {
                     user = existingUser;
                 } else {
-                    user = new User(userName, "", 0000000000L, socialUserEmail, userName, "socialUser", "USER");
+                    user = new User(userName, "", 0000000000L, socialUserEmail, userName, "socialUser", "ROLE_"+ApplicationUserRole.USER.name());
                     userService.saveUser(user);
                 }
             } else {
@@ -147,6 +149,7 @@ public class TicketController {
         }
     }
 
+    @PreAuthorize("hasRole('ADMIN_CS')")
     @GetMapping(path = "/guests/{movieShowId}")
     public ResponseEntity<List<Guest>> getGuestsOfMovieShow(@PathVariable("movieShowId") Integer movieShowId) {
         List<Guest> guestsList = guestService.getAttendantsOfMovieShow(movieShowId);

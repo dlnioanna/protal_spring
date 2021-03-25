@@ -9,6 +9,7 @@ import com.protal.myApp.Utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.sql.Date;;
@@ -31,6 +32,7 @@ public class MovieShowController {
         return new ResponseEntity<List<MovieShow>>(movieShowList, HttpStatus.OK);
     }
 
+    @PreAuthorize("hasRole('ADMIN_CS')")
     @GetMapping(path = "/movieshows")
     public ResponseEntity<List<MovieShow>> getMovieShows() {
         List<MovieShow> movieShowList = movieShowService.findAll();

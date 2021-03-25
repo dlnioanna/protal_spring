@@ -44,7 +44,7 @@ public class UserController {
         return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
     }
 
-    //@PreAuthorize("hasRole('ADMIN_CS')")
+    @PreAuthorize("hasRole('ADMIN_CS')")
     @PostMapping(value = "/getUsers")
     public ResponseEntity<List<User>> getUserByUsernameOrEmail(@RequestParam(name = "username", required = false) String username,
                                                                @RequestParam(name = "email", required = false) String email) {
@@ -52,6 +52,7 @@ public class UserController {
         return new ResponseEntity<List<User>>(userList, HttpStatus.OK);
     }
 
+    //κάθε χρήστης επεξεργάζεται τα δικά του στοιχεία
     @PostMapping(value = "/updateUserData")
     public ResponseEntity updateUserValues(@RequestParam(value = "imageFile", required = false) MultipartFile file,
                                            @RequestParam("name") String name,
@@ -59,29 +60,16 @@ public class UserController {
                                            @RequestParam("telephone") Long telephone,
                                            @RequestParam("password") String password,
                                            @RequestParam("id") Integer id) throws IOException {
-        User user = userService.findById(id);
-        user.setName(name);
-        user.setLastName(lastName);
-        user.setTelephone(telephone);
-        user.setPassword(password);
-        if (user != null) {
-            byte[] image = null;
-            if (file != null) {
-                image = compressBytes(file.getBytes());
-                user.setImage(image);
-            } else {
-                image = compressBytes(user.getImage());
-                if (image != null) {
-                    user.setImage(image);
-                }
-            }
-            userService.saveUser(user);
+       boolean succesfulUpdate=userService.updateAccount(file,name,lastName,telephone,password,id);
+       if(succesfulUpdate){
             return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
         }
     }
 
+    //οι admin_cs επεξεργάζονται τα στοιχεία άλλων χρηστών
+    @PreAuthorize("hasRole('ADMIN_CS')")
     @PostMapping(value = "/editUser")
     public ResponseEntity editUserValues(@RequestParam("name") String name,
                                          @RequestParam("lastName") String lastName,
@@ -91,18 +79,8 @@ public class UserController {
                                          @RequestParam("username") String username,
                                          @RequestParam("email") String email,
                                          @RequestParam("id") Integer id) {
-        User user = userService.findById(id);
-        user.setName(name);
-        user.setLastName(lastName);
-        user.setTelephone(telephone);
-        user.setPassword(password);
-        user.setRole(role);
-        user.setUsername(username);
-        user.setEmail(email);
-        if (user != null) {
-            byte[] image = compressBytes(user.getImage());
-            user.setImage(image);
-            userService.saveUser(user);
+        boolean succesfulEdit = userService.editUserValues(name,lastName,telephone,password,role,username,email,id);
+        if (succesfulEdit) {
             return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);

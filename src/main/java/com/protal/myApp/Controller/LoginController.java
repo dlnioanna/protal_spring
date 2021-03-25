@@ -2,6 +2,7 @@ package com.protal.myApp.Controller;
 
 import com.protal.myApp.Entity.User;
 import com.protal.myApp.Service.UserService;
+import com.protal.myApp.security.ApplicationUserRole;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -44,23 +45,8 @@ public class LoginController {
                                    @RequestParam("lastName") String lastName, @RequestParam("telephone") Long telephone,
                                    @RequestParam("email") String email, @RequestParam("username") String username,
                                    @RequestParam("password") String password) throws IOException {
-        byte[] image = null;
-        try {
-            if (file != null) {
-                image = compressBytes(file.getBytes());
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        boolean userExists = userService.checkIfUserExists(username, email);
-        System.out.println("user exists "+userExists);
-        // List<User> userList = userService.findByUsernameOrEmail(username, email);
-        if (!userExists) {
-            User newUser = new User(name, lastName, telephone, email,
-                    username, password, User.ROLE_USER);
-            System.out.println("user image "+image);
-            newUser.setImage(image);
-            userService.saveUser(newUser);
+       boolean succesfulRegistration = userService.registerNewUser(file,name,lastName,telephone,email,username,password);
+       if(succesfulRegistration){
             return new ResponseEntity(HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.BAD_REQUEST);
