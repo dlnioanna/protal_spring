@@ -90,7 +90,7 @@ public class TicketController {
         Integer ticketsAvailable = movieShow.getRoomOfMovieShow().getCapacity() - movieShow.getShowTickets().size();
         //αν δεν υπάρχουν τόσα διαθέσιμα εισιτήρια
         if (ticketsAvailable < numberOfTickets) {
-            return new ResponseEntity<>("Υπάρχουν " + ticketsAvailable + " διαθέσιμα εισιτήρια.", HttpStatus.BAD_REQUEST);
+            return new ResponseEntity("Υπάρχουν " + ticketsAvailable + " διαθέσιμα εισιτήρια.", HttpStatus.BAD_REQUEST);
         } else {
             //αν έχει συνδεθεί μέσω google του φτιαχνω λογαριασμο με password socialUser και τηλέφωνο 0000000000 και τα υπόλοιπα στοιχεία κενά
             if (isSocialUser == 1) {
@@ -145,7 +145,7 @@ public class TicketController {
             purchase.setTicketsPurchased(guestsTickets);
             purchaseService.savePurchase(purchase);
             userService.sendEmailToUser(guests, userTicket, guestsTickets, user, movieShow);
-            return new ResponseEntity<>(HttpStatus.OK);
+            return new ResponseEntity(HttpStatus.OK);
         }
     }
 
