@@ -203,7 +203,7 @@ public class UserServiceImpl implements UserService {
         boolean userExists = checkIfUserExists(username, email);
         if (!userExists) {
             User newUser = new User(name, lastName, telephone, email,
-                    username, password, ApplicationUserRole.USER.name());
+                    username, password, "ROLE_"+ApplicationUserRole.USER.name());
             System.out.println("user image " + image);
             newUser.setImage(image);
             saveUser(newUser);
