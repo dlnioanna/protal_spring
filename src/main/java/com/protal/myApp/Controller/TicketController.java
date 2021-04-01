@@ -74,8 +74,7 @@ public class TicketController {
             MovieShow movieShow = movieShowService.findById(ticket.getMovieShow().getId());
             Movie movie = movieService.findById(movieShow.getMovieOfMovieShow().getId());
             Gson gson = new Gson();
-            String response = "Καλωσήλθες "+name+"!"+" Η ταινία  \'"+movie.getTitle()+"\' θα ξεκινήσει στις "+
-                    DateUtils.getMovieShowDate(movieShow.getShowDate(),movieShow.getStartTime())+" στην αίθουσα "+movieShow.getRoomOfMovieShow().getName()+". Καλή διασκέδαση!";
+            String response = "Καλωσήλθες "+name+"!"+" Η ταινία  \'"+movie.getTitle()+"\' θα ξεκινήσει στην αίθουσα "+movieShow.getRoomOfMovieShow().getName()+". Καλή διασκέδαση!";
             return new ResponseEntity(gson.toJson(response,String.class), HttpStatus.OK);
         }
     }
