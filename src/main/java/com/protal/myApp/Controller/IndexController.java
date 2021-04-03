@@ -19,7 +19,6 @@ public class IndexController {
 
     @RequestMapping("/")
     public String index() {
-        User user=userService.findById(1);
         return "index";
     }
 
